@@ -135,8 +135,8 @@ async def generate_knowledge_graph(
         text_splitter=FixedSizeSplitter(chunk_size=chunk_size, chunk_overlap=chunk_overlap),
         from_pdf=True
     )
+
     print(f"Current working directory: {os.getcwd()}")
-    # files = os.listdir(path)
     files = ["SP800-21-1_Dec2005","SP800-57part1rev4","SP800-57part2"]
     print(f"Files to process: {files}")
     fpaths = [os.path.join(path, f) for f in files]
@@ -176,13 +176,13 @@ def generate_vector_retriever(driver, embedder=None, dimensions=3584, index_name
     return vector_retriever
 
 
-# TODO: Instantiate embedder_llm
+#  Instantiate embedder_llm
 print("Initializing embedder LLM...")
 try:
     embedder_llm = OpenAILLM(
         model_name="deepseek/deepseek-v3-base:free",
-        api_key=config("OPENROUTER_DEEPSEEK_API_KEY"),
-        base_url=config("OPENROUTER_BASE_URL"),
+        api_key=config("Deepseek_API"),
+        base_url=config("OPENROUTER_base_url"),
         model_params={
             "response_format": {"type": "json_object"},
             "temperature": TEMPERATURE,
@@ -195,7 +195,7 @@ except Exception as e:
     raise
 
 
-# TODO: Instantiate embedder
+#  Instantiate embedder
 print("Initializing embedder...")
 try:
     embedder = OllamaEmbeddings(model="tazarov/all-minilm-l6-v2-f32")
@@ -212,7 +212,7 @@ except Exception as e:
     print(f"Error testing embedder: {str(e)}")
     raise
 
-# TODO: Create knowledge graph, if needed
+#  Create knowledge graph, if needed
 if CREATE_KG_GRAPH:
     print("Creating knowledge graph...")
     try:
@@ -231,7 +231,7 @@ if CREATE_KG_GRAPH:
         print(f"Error creating knowledge graph: {str(e)}")
         raise
 
-# TODO: Instantiate vector retriever
+#  Instantiate vector retriever
 print("Setting up vector retriever...")
 try:
     vector_retriever = generate_vector_retriever(
@@ -246,12 +246,12 @@ except Exception as e:
     print(f"Error setting up vector retriever: {str(e)}")
     raise
 
-# TODO: Instantiate llm for RAG
+#  Instantiate llm for RAG
 # 3. GraphRAG Class
 print("Initializing LLM for RAG...")
 try:
     llm = OllamaLLM(
-        model_name="deepseek-r1:1.5b",
+        model_name="llama3.2-vision",
         model_params={
            "temperature": TEMPERATURE,
            "top_p": TOP_P,
@@ -262,7 +262,7 @@ except Exception as e:
     print(f"Error initializing LLM for RAG: {str(e)}")
     raise
 
-# TODO: Instantiate RAG text template
+#  Instantiate RAG text template
 print("Creating RAG template...")
 rag_template_text = '''
 You are an expert cybersecurity analyst with deep knowledge of NIST standards and frameworks.
@@ -286,7 +286,7 @@ Guidelines:
 rag_template = RagTemplate(template=rag_template_text, expected_inputs=['query_text', 'context'])
 print("RAG template created")
 
-# TODO: Instantiate GraphRAG instance
+#  Instantiate GraphRAG instance
 print("Initializing GraphRAG...")
 try:
     rag = GraphRAG(llm=llm, retriever=vector_retriever, prompt_template=rag_template)

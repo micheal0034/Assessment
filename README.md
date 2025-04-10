@@ -53,7 +53,7 @@ The system can build a knowledge graph from NIST cybersecurity documents using L
 
 Vector embeddings enable semantic search across the knowledge base:
 
-- Uses Ollama embeddings (default model: `tazarov/all-minilm-l6-v2-f32`)
+- Uses Ollama embeddings (default model: `llama3.2-vision`)
 - Creates and manages vector indexes in Neo4j
 - Implements similarity search for relevant content retrieval
 
