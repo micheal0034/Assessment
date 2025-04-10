@@ -22,14 +22,12 @@ from decouple import config
 from rich import print
 
 print("Starting execution...")
-
 NEO4J_URI = config("AURA_NEO4J_CONNECTION_URI")
 NEO4J_USERNAME = config("NEO4J_USERNAME")
 NEO4J_PASSWORD = config("NEO4J_PASSWORD")
 CREATE_KG_GRAPH = False
 INIT_INDEX = False
 
-print(f"Configuration loaded: URI={NEO4J_URI}, Username={NEO4J_USERNAME}, Create KG={CREATE_KG_GRAPH}, Init Index={INIT_INDEX}")
 
 try:
     neo4j_driver = neo4j.GraphDatabase.driver(
@@ -43,8 +41,8 @@ except Exception as e:
 
 model_name = "tazarov/all-minilm-l6-v2-f32"
 document_path = "../data/nist_cybersecurity_documents"
-print(f"Using model: {model_name}")
-print(f"Document path: {document_path}")
+
+
 try:
     files_in_dir = os.listdir(document_path)
     print(f"Files in document directory: {files_in_dir}")
@@ -57,20 +55,15 @@ chunk_overlap = 20
 TOP_P = 0.9
 TEMPERATURE = 0.5
 
-print(f"Vector index: {vector_index_name}, Chunk size: {chunk_size}, Chunk overlap: {chunk_overlap}")
-print(f"Generation params: Temperature={TEMPERATURE}, Top_p={TOP_P}")
-
 
 def create_schema_definition():
     print("Defining knowledge graph schema...")
-    # define node labels
     basic_node_labels = ["Object", "Entity", "Group", "Person", "OrganizationOrInstitution", "IdeaOrConcept", "GeographicLocation"]
 
     academic_node_labels = ["ArticleOrPaper", "PublicationOrJournal"]
 
     node_labels = basic_node_labels + academic_node_labels
 
-    # define relationship types
     relation_types = [
         "CREATED_BY", "IMPACTS", "EVALUATES", "RELATED_TO", "WROTE",
         "RESULTS_IN", "SUPPORTS", "DEFINES", "RECOMMENDS",
@@ -212,7 +205,7 @@ except Exception as e:
     print(f"Error testing embedder: {str(e)}")
     raise
 
-#  Create knowledge graph, if needed
+#  Create knowledge graph
 if CREATE_KG_GRAPH:
     print("Creating knowledge graph...")
     try:
@@ -247,7 +240,6 @@ except Exception as e:
     raise
 
 #  Instantiate llm for RAG
-# 3. GraphRAG Class
 print("Initializing LLM for RAG...")
 try:
     llm = OllamaLLM(
@@ -319,8 +311,6 @@ def postprocess_rag_completion(completion):
         print(f"Error in postprocessing: {str(e)}")
         # Fallback to returning the original completion if error occurs
         return completion.answer
-
-# 4. Run
 
 if __name__ == "__main__":
     user_prompt = '''
