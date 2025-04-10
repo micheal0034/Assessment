@@ -12,9 +12,9 @@ This system combines several advanced technologies to provide intelligent queryi
 
 ## Requirements
 
-- Python 3.8+
+- Python 3.10+
 - Neo4j database instance
-- Access to embedding models (Ollama)
+- Access to embedding models (Ollama -- llama vision or deepseek)
 - NIST cybersecurity documents in the specified directory
 
 ### Python Dependencies
@@ -34,9 +34,9 @@ python-decouple
 The application uses environment variables for configuration. Create a `.env` file with the following parameters:
 
 ```
-NEO4J_URI=bolt://localhost:7687
-NEO4J_USERNAME=neo4j
-NEO4J_PASSWORD=your_password
+NEO4J_URI=""
+NEO4J_USERNAME=""
+NEO4J_PASSWORD=""
 ```
 
 ## Key Components
@@ -80,6 +80,8 @@ Set `CREATE_KG_GRAPH = True` to build or update the knowledge graph. This proces
 - Chunks documents into manageable segments
 - Extracts entities and relationships
 - Populates the Neo4j database
+
+`Because of some issues, i have to upload the documents in neo4j llm graph builder -- done in split seconds.....`
 
 ### Vector Index Creation
 
