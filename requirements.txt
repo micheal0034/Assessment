@@ -1,0 +1,9 @@
+neo4j
+neo4j-graphrag
+openai
+ollama
+langchain
+langchain-google-genai
+python-decouple
+colorama
+rich

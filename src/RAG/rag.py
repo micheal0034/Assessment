@@ -23,7 +23,7 @@ from rich import print
 
 print("Starting execution...")
 
-NEO4J_URI = config("NEO4J_URI")
+NEO4J_URI = config("AURA_NEO4J_CONNECTION_URI")
 NEO4J_USERNAME = config("NEO4J_USERNAME")
 NEO4J_PASSWORD = config("NEO4J_PASSWORD")
 CREATE_KG_GRAPH = False
@@ -42,7 +42,7 @@ except Exception as e:
     raise
 
 model_name = "tazarov/all-minilm-l6-v2-f32"
-document_path = "../../data/NIST-Cybersecurity-Documents"
+document_path = "../data/nist_cybersecurity_documents"
 print(f"Using model: {model_name}")
 print(f"Document path: {document_path}")
 try:
@@ -181,8 +181,8 @@ print("Initializing embedder LLM...")
 try:
     embedder_llm = OpenAILLM(
         model_name="deepseek/deepseek-v3-base:free",
-        api_key=config("llama"),
-        base_url=config("base_url"),
+        api_key=config("OPENROUTER_DEEPSEEK_API_KEY"),
+        base_url=config("OPENROUTER_BASE_URL"),
         model_params={
             "response_format": {"type": "json_object"},
             "temperature": TEMPERATURE,
@@ -251,7 +251,7 @@ except Exception as e:
 print("Initializing LLM for RAG...")
 try:
     llm = OllamaLLM(
-        model_name=model_name,
+        model_name="deepseek-r1:1.5b",
         model_params={
            "temperature": TEMPERATURE,
            "top_p": TOP_P,
@@ -308,15 +308,17 @@ def extract_json_from_content(content):
         raise
 
 def postprocess_rag_completion(completion):
-    print(f"Postprocessing RAG completion: {completion[:100]}...")
     try:
-        processed = completion.answer.split("</think>")[-1].strip()
+        if "</think>" in completion.answer:
+            processed = completion.answer.split("</think>")[-1].strip()
+        else:
+            processed = completion.answer
         print(f"Processed completion: {processed[:100]}...")
         return processed
     except Exception as e:
         print(f"Error in postprocessing: {str(e)}")
         # Fallback to returning the original completion if error occurs
-        return completion
+        return completion.answer
 
 # 4. Run
 
