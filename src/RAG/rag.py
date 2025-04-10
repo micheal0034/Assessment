@@ -22,7 +22,7 @@ from decouple import config
 from rich import print
 
 print("Starting execution...")
-NEO4J_URI = config("AURA_NEO4J_CONNECTION_URI")
+NEO4J_URI = config("NEO4J_URI")
 NEO4J_USERNAME = config("NEO4J_USERNAME")
 NEO4J_PASSWORD = config("NEO4J_PASSWORD")
 CREATE_KG_GRAPH = False
@@ -40,7 +40,7 @@ except Exception as e:
     raise
 
 model_name = "tazarov/all-minilm-l6-v2-f32"
-document_path = "../data/nist_cybersecurity_documents"
+document_path = "../data/NIST-Cybersecurity-Documents"
 
 
 try:
